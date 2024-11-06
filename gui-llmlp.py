@@ -1,7 +1,10 @@
 import requests
 import spacy
 from fuzzywuzzy import fuzz
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QVBoxLayout, QWidget, QLabel, QTextEdit, QComboBox
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, 
+                             QVBoxLayout, QWidget, QLabel, QTextEdit, QComboBox, QHBoxLayout)
+from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtCore import Qt
 
 # Load spaCy's English NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -76,35 +79,77 @@ class LessonPlanApp(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.setWindowTitle("Lesson Plan Generator with Wikipedia API")
-        self.setGeometry(100, 100, 800, 600)
+        # Set up window
+        self.setWindowTitle("Enhanced Lesson Plan Generator")
+        self.setGeometry(200, 200, 1000, 700)
         
+        # Set modern color palette styles
+        self.setStyleSheet(f"""
+            QMainWindow {{
+                background-color: #363537;
+            }}
+            QLabel {{
+                font-size: 16px;
+                color: #fffffc;
+            }}
+            QLineEdit, QTextEdit {{
+                border: 1px solid #beb7a4;
+                padding: 6px;
+                font-size: 14px;
+                background-color: #beb7a4;
+                color: #363537;
+            }}
+            QComboBox {{
+                padding: 8px;
+                font-size: 14px;
+                background-color: #beb7a4;
+                color: #363537;
+            }}
+            QPushButton {{
+                padding: 8px;
+                font-size: 14px;
+                background-color: #ff7f11;
+                color: #fffffc;
+                border-radius: 5px;
+            }}
+            QPushButton:hover {{
+                background-color: #ff3f00;
+            }}
+        """)
+
+        # Main layout for the central widget
         self.layout = QVBoxLayout()
-        
-        self.topic_label = QLabel("Enter Lesson Topic or Request:")
+
+        # Input prompt and text box for topic
+        self.topic_label = QLabel("Enter your topic or request (e.g., 'Explain photosynthesis')")
         self.layout.addWidget(self.topic_label)
         
         self.topic_input = QLineEdit()
         self.layout.addWidget(self.topic_input)
-        
-        # Drop-down for selecting output format
-        self.format_label = QLabel("Select Output Format:")
+
+        # Format dropdown setup
+        self.format_label = QLabel("Choose your preferred output format")
         self.layout.addWidget(self.format_label)
         
         self.format_dropdown = QComboBox()
         self.format_dropdown.addItems(["Plain Text", "Lesson Plan", "Presentation Outline", "Song"])
         self.layout.addWidget(self.format_dropdown)
         
+        # Generate button
         self.generate_button = QPushButton("Generate Lesson Content")
         self.generate_button.clicked.connect(self.generate_content)
         self.layout.addWidget(self.generate_button)
         
-        self.output_label = QLabel("Generated Content:")
+        # Output label and text display for generated content
+        self.output_label = QLabel("Your generated content:")
         self.layout.addWidget(self.output_label)
-        
+
         self.output_display = QTextEdit()
+        self.output_display.setReadOnly(True)
+        self.output_display.setStyleSheet("background-color: #beb7a4; border: 1px solid #CCC; padding: 10px; font-size: 14px; color: #363537;")
         self.layout.addWidget(self.output_display)
         
+        # Set central widget
         container = QWidget()
         container.setLayout(self.layout)
         self.setCentralWidget(container)
